@@ -1,0 +1,23 @@
+# ninja log v7
+25623	37695	8145493862112999	CMakeFiles/core_services.dir/src/service/search_service.cpp.obj	f153bfc72da10791
+14301	25606	8145493748690284	CMakeFiles/core_services.dir/src/service/playback_queue.cpp.obj	5427718309529252
+14416	27628	8145493749868740	CMakeFiles/core_services.dir/src/service/playlist_service.cpp.obj	776cf0a84fd65b9c
+178	14287	8145493607401713	CMakeFiles/core_services.dir/src/service/library_service.cpp.obj	355d130431be1aba
+169	18109	8145496620348108	CMakeFiles/challenge_tests.dir/tests/test_suite.cpp.obj	6fbd54bb18b9a77a
+196	14413	8145493607627362	CMakeFiles/core_services.dir/src/service/playback_controller.cpp.obj	19c41cb2bc3a7a56
+37710	38907	8145493983107220	libcore_services.a	b8bbdb0ad90d49cf
+18112	21390	8145496799780174	challenge_tests.exe	683a4290821e69f0
+60	963	8145505249210963	build.ninja	6c4b9565aa09b038
+60	963	8145505249037235	C:/Users/prakh/Desktop/DEBUGLAB C++/TuneBox/build/cmake_install.cmake	6c4b9565aa09b038
+15	912	8145505249210963	build.ninja	6c4b9565aa09b038
+15	912	8145505249210963	C:/Users/prakh/Desktop/DEBUGLAB C++/TuneBox/build/cmake_install.cmake	6c4b9565aa09b038
+146	11306	8145505251620702	CMakeFiles/core_services.dir/src/service/playback_controller.cpp.obj	739db1b050651bc9
+130	11361	8145505251459050	CMakeFiles/core_services.dir/src/service/library_service.cpp.obj	5105f79dd37d235b
+11313	20334	8145505363370129	CMakeFiles/core_services.dir/src/service/playback_queue.cpp.obj	783bab97609a3dbd
+11362	22742	8145505363824030	CMakeFiles/core_services.dir/src/service/playlist_service.cpp.obj	ad48454ddf8c036f
+20334	29609	8145505453687825	CMakeFiles/core_services.dir/src/service/search_service.cpp.obj	de6b2759d7a3cfb2
+29610	31299	8145505546287058	libcore_services.a	b8bbdb0ad90d49cf
+22742	34097	8145505477705084	CMakeFiles/challenge_tests.dir/tests/test_suite.cpp.obj	9893b8112f0d446a
+34098	35572	8145505591177228	challenge_tests.exe	683a4290821e69f0
+40	24304	8145505839560974	CMakeFiles/server.dir/src/main.cpp.obj	a27eea9f91de2bd
+24312	25114	8145506082307174	server.exe	3838d6f40e175bd3

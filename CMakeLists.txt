@@ -5,36 +5,24 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-option(SEED_BUGS "Enable the 4 intentional bugs for candidate debugging" OFF)
+# Enable the 4 intentional bugs for candidate debugging
+add_compile_definitions(SEED_BUGS)
 
-if(SEED_BUGS)
-    add_compile_definitions(SEED_BUGS)
-    message(STATUS "TuneBox configured with SEED_BUGS=ON (intentional bugs active)")
-else()
-    message(STATUS "TuneBox configured with SEED_BUGS=OFF (clean/fixed mode)")
-endif()
+# Optimization for fast compile times in containers
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 
 # Core include directories
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(include)
 
-# Discover service source files
-set(SERVICE_SOURCES
-    src/service/library_service.cpp
-    src/service/search_service.cpp
-    src/service/playlist_service.cpp
-    src/service/playback_queue.cpp
-    src/service/playback_controller.cpp
-)
-
-# Target 1: core_services static library
-add_library(core_services STATIC ${SERVICE_SOURCES})
-target_include_directories(core_services PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+# 1. Core library with candidate-editable services
+file(GLOB_RECURSE CORE_SOURCES "src/service/*.cpp")
+add_library(core_services STATIC ${CORE_SOURCES})
 
 if(WIN32)
     target_link_libraries(core_services PUBLIC ws2_32 crypt32)
 endif()
 
-# Target 2: server executable
+# 2. Main Web Server Target (name MUST match what start.sh executes)
 add_executable(server src/main.cpp)
 target_link_libraries(server PRIVATE core_services)
 
@@ -42,7 +30,7 @@ if(WIN32)
     target_link_libraries(server PRIVATE ws2_32 crypt32)
 endif()
 
-# Target 3: challenge_tests executable
+# 3. Test Runner Target (name MUST match what tests/run_tests.sh executes)
 add_executable(challenge_tests tests/test_suite.cpp)
 target_link_libraries(challenge_tests PRIVATE core_services)
 

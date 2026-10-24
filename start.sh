@@ -1,90 +1,46 @@
 #!/usr/bin/env bash
 set -e
+cd "$(dirname "$0")"
 
-# Change to repository root
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$SCRIPT_DIR"
-cd "$ROOT_DIR"
-
-PORT="${PORT:-8080}"
-export PORT
-
-# Configure CMake if build folder does not exist
-if [ ! -d "build" ]; then
-    cmake -B build -S . -DCMAKE_BUILD_TYPE=Release >&2
+# 1. Configure and perform initial build if not present
+if [ ! -d build ]; then
+    cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
 fi
+cmake --build build --target server -j2 1>&2
 
-# Initial build
-echo "[TuneBox] Building server..." >&2
-cmake --build build --target server -j2 >&2
-
-SERVER_BIN=""
+# Determine server binary path
+SERVER_BIN="./build/server"
 if [ -f "./build/server.exe" ]; then
     SERVER_BIN="./build/server.exe"
-elif [ -f "./build/server" ]; then
-    SERVER_BIN="./build/server"
-else
-    echo "[TuneBox] Error: server binary not found after build." >&2
-    exit 1
 fi
 
-# Track server process ID
-SERVER_PID=""
+# 2. Start server in background
+PORT=8080 "$SERVER_BIN" &
+PID=$!
 
-cleanup() {
-    echo "[TuneBox] Shutting down..." >&2
-    if [ -n "$SERVER_PID" ] && kill -0 "$SERVER_PID" 2>/dev/null; then
-        kill "$SERVER_PID" 2>/dev/null || true
-    fi
-    exit 0
+# Clean up daemon on script exit
+trap 'kill -TERM "$PID" 2>/dev/null; exit 0' SIGTERM SIGINT EXIT
+
+# Snapshot timestamps of all source & header files
+get_snap() {
+    find src include -type f \( -name "*.cpp" -o -name "*.hpp" -o -name "*.h" \) -exec stat -c "%Y %n" {} + 2>/dev/null | md5sum | cut -d' ' -f1
 }
+LAST_SNAP=$(get_snap)
 
-trap cleanup SIGINT SIGTERM EXIT
-
-# Start server in background
-"$SERVER_BIN" &
-SERVER_PID=$!
-echo "[TuneBox] Server running with PID $SERVER_PID on port $PORT" >&2
-
-# File watcher loop
-get_mtime_sum() {
-    find src include -type f \( -name "*.cpp" -o -name "*.hpp" -o -name "*.h" \) -exec stat -c %Y {} + 2>/dev/null | awk '{s+=$1} END {print s}'
-}
-
-LAST_MTIME=$(get_mtime_sum)
-
-# If watcher cannot determine mtime, wait on server process directly
-if [ -z "$LAST_MTIME" ]; then
-    echo "[TuneBox] File watcher unavailable; running server in foreground." >&2
-    wait "$SERVER_PID"
-    exit 0
-fi
-
-echo "[TuneBox] Watching for source changes..." >&2
-
+# 3. Hot-reload polling loop
 while true; do
     sleep 2
-    # Check if server process is still alive
-    if ! kill -0 "$SERVER_PID" 2>/dev/null; then
-        echo "[TuneBox] Server stopped unexpectedly." >&2
-        wait "$SERVER_PID"
-        exit 1
-    fi
-
-    CURRENT_MTIME=$(get_mtime_sum)
-    if [ "$CURRENT_MTIME" != "$LAST_MTIME" ] && [ -n "$CURRENT_MTIME" ]; then
-        echo "[TuneBox] Detected changes. Rebuilding incrementally..." >&2
-        if cmake --build build --target server -j2 >&2; then
-            echo "[TuneBox] Build succeeded. Restarting server..." >&2
-            kill "$SERVER_PID" 2>/dev/null || true
-            wait "$SERVER_PID" 2>/dev/null || true
-            "$SERVER_BIN" &
-            SERVER_PID=$!
-            LAST_MTIME="$CURRENT_MTIME"
-            echo "[TuneBox] Server restarted with PID $SERVER_PID" >&2
-        else
-            echo "[TuneBox] Build failed! Preserving currently running server." >&2
-            LAST_MTIME="$CURRENT_MTIME"
+    CUR_SNAP=$(get_snap)
+    if [ "$CUR_SNAP" != "$LAST_SNAP" ]; then
+        echo "[Engine] Source modified. Rebuilding C++ server..."
+        # Incrementally compile ONLY the server target
+        if cmake --build build --target server -j2 1>&2; then
+            kill -TERM "$PID" 2>/dev/null || true
+            wait "$PID" 2>/dev/null || true
+            PORT=8080 "$SERVER_BIN" &
+            PID=$!
+            echo "[Engine] Server reloaded successfully."
         fi
+        LAST_SNAP="$CUR_SNAP"
     fi
 done

@@ -1,25 +1,16 @@
 #!/usr/bin/env bash
 set -e
+cd "$(dirname "$0")/.."
 
-# Change to repository root
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-cd "$ROOT_DIR"
-
-# Configure if build directory doesn't exist
-if [ ! -d "build" ]; then
-    cmake -B build -S . -DCMAKE_BUILD_TYPE=Release >&2
+# 1. Recompile test binary incrementally (compiler logs redirected to stderr)
+if [ ! -d build ]; then
+    cmake -B build -S . -DCMAKE_BUILD_TYPE=Release 1>&2
 fi
+cmake --build build --target challenge_tests -j2 1>&2
 
-# Build challenge_tests incrementally
-cmake --build build --target challenge_tests -j2 >&2
-
-# Run test binary, stdout goes to stdout, stderr to stderr, preserving exit code
+# 2. Execute test binary (stdout prints pure JSON)
 if [ -f "./build/challenge_tests.exe" ]; then
-    ./build/challenge_tests.exe
-elif [ -f "./build/challenge_tests" ]; then
-    ./build/challenge_tests
+    exec ./build/challenge_tests.exe
 else
-    echo "{\"error\": \"challenge_tests binary not found\"}"
-    exit 1
+    exec ./build/challenge_tests
 fi
