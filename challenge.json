@@ -1,0 +1,23 @@
+{
+  "challenge_id": "tunebox",
+  "title": "TuneBox — Music Player & Playlist Manager",
+  "description": "A modern desktop-inspired web music player and playlist management application with simulated audio playback, queue management, and search.",
+  "runtime_config": {
+    "runtime_type": "cpp-cmake",
+    "install_command": "cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && cmake --build build -j2",
+    "start_command": "./start.sh",
+    "test_command": "./tests/run_tests.sh",
+    "ports": [
+      {
+        "container_port": 8080,
+        "type": "preview"
+      }
+    ]
+  },
+  "bug_topics": [
+    "Array Indexing",
+    "String Processing",
+    "Linked List Traversal",
+    "FIFO Queue"
+  ]
+}
