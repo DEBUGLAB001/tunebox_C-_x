@@ -25,8 +25,6 @@ std::string SearchService::to_lower(const std::string& str) {
 std::vector<Track> SearchService::search(const std::string& query, const std::string& field_filter) const {
     std::string clean_query = query;
 #ifdef SEED_BUGS
-    // Bug 2: String Processing defect - fails to normalize whitespace and lowercase query
-    // This causes case-insensitive matching and queries with leading/trailing spaces to fail
 #else
     clean_query = trim(to_lower(query));
 #endif

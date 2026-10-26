@@ -71,8 +71,6 @@ bool PlaylistTrackList::reorder(size_t from_idx, size_t to_idx) {
 
     auto curr = head_;
 #ifdef SEED_BUGS
-    // Bug 3: Linked list traversal defect - off-by-one traversal error during node reinsertion
-    // Loops with <= instead of <, advancing one node too far past the intended destination slot
     for (size_t i = 0; i <= to_idx - 1 && curr && curr->next; ++i) {
         curr = curr->next;
     }

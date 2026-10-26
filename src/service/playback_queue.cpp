@@ -20,7 +20,6 @@ std::string PlaybackQueue::dequeue() {
         return "";
     }
 #ifdef SEED_BUGS
-    // Bug 4: FIFO Queue defect - pops twice, skipping the first valid queued track
     queue_.pop_front();
     if (queue_.empty()) {
         return "";

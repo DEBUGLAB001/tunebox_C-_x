@@ -32,8 +32,6 @@ std::vector<Track> LibraryService::get_all_tracks() const {
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<Track> result;
 #ifdef SEED_BUGS
-    // Bug 1: Array Indexing off-by-one defect - loop terminates early at size() - 1,
-    // silently skipping the last track at the boundary
     size_t limit = tracks_.empty() ? 0 : tracks_.size() - 1;
     for (size_t i = 0; i < limit; ++i) {
         result.push_back(tracks_[i]);
@@ -59,7 +57,6 @@ std::optional<Track> LibraryService::get_track_by_id(const std::string& id) cons
 std::optional<Track> LibraryService::get_track_at_index(size_t index) const {
     std::lock_guard<std::mutex> lock(mutex_);
 #ifdef SEED_BUGS
-    // Bug 1: Array boundary indexing defect - rejects valid boundary index tracks_.size() - 1
     if (tracks_.empty() || index >= tracks_.size() - 1) {
         return std::nullopt;
     }

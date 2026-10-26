@@ -21,7 +21,7 @@ struct TestCase {
 int main() {
     std::vector<TestCase> test_cases;
 
-    // --- TEST 1: Library Array Boundary Behavior (Targeted: Array Indexing Bug) ---
+    // --- TEST 1: Library Array Boundary Behavior ---
     test_cases.push_back({"test_library_array_boundary", []() {
         tunebox::LibraryService lib;
         auto tracks = lib.get_all_tracks();
@@ -39,7 +39,7 @@ int main() {
         }
     }});
 
-    // --- TEST 2: Search String Processing (Targeted: String Processing Bug) ---
+    // --- TEST 2: Search String Processing ---
     test_cases.push_back({"test_search_string_processing", []() {
         tunebox::LibraryService lib;
         tunebox::SearchService search(lib);
@@ -55,7 +55,7 @@ int main() {
         }
     }});
 
-    // --- TEST 3: Playlist Linked List Traversal & Reordering (Targeted: Linked List Bug) ---
+    // --- TEST 3: Playlist Linked List Traversal & Reordering ---
     test_cases.push_back({"test_playlist_linked_list_traversal", []() {
         tunebox::LibraryService lib;
         tunebox::PlaylistService pl_svc(lib);
@@ -81,7 +81,7 @@ int main() {
         }
     }});
 
-    // --- TEST 4: FIFO Playback Queue Behavior (Targeted: FIFO Queue Bug) ---
+    // --- TEST 4: FIFO Playback Queue Behavior ---
     test_cases.push_back({"test_playback_queue_fifo", []() {
         tunebox::LibraryService lib;
         tunebox::PlaybackQueue q(lib);

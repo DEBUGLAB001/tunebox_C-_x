@@ -5,7 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Enable the 4 intentional bugs for candidate debugging
 add_compile_definitions(SEED_BUGS)
 
 # Optimization for fast compile times in containers
