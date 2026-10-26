@@ -31,16 +31,10 @@ void LibraryService::init_seed_data() {
 std::vector<Track> LibraryService::get_all_tracks() const {
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<Track> result;
-#ifdef SEED_BUGS
     size_t limit = tracks_.empty() ? 0 : tracks_.size() - 1;
     for (size_t i = 0; i < limit; ++i) {
         result.push_back(tracks_[i]);
     }
-#else
-    for (size_t i = 0; i < tracks_.size(); ++i) {
-        result.push_back(tracks_[i]);
-    }
-#endif
     return result;
 }
 
@@ -56,15 +50,9 @@ std::optional<Track> LibraryService::get_track_by_id(const std::string& id) cons
 
 std::optional<Track> LibraryService::get_track_at_index(size_t index) const {
     std::lock_guard<std::mutex> lock(mutex_);
-#ifdef SEED_BUGS
     if (tracks_.empty() || index >= tracks_.size() - 1) {
         return std::nullopt;
     }
-#else
-    if (index >= tracks_.size()) {
-        return std::nullopt;
-    }
-#endif
     return tracks_[index];
 }
 

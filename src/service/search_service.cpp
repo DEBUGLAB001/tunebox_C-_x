@@ -24,10 +24,6 @@ std::string SearchService::to_lower(const std::string& str) {
 
 std::vector<Track> SearchService::search(const std::string& query, const std::string& field_filter) const {
     std::string clean_query = query;
-#ifdef SEED_BUGS
-#else
-    clean_query = trim(to_lower(query));
-#endif
 
     if (clean_query.empty()) {
         return {};
@@ -39,16 +35,9 @@ std::vector<Track> SearchService::search(const std::string& query, const std::st
     for (const auto& track : all_tracks) {
         bool matched = false;
 
-#ifdef SEED_BUGS
         auto field_matches = [&clean_query](const std::string& field) {
             return field.find(clean_query) != std::string::npos;
         };
-#else
-        auto field_matches = [&clean_query](const std::string& field) {
-            std::string lower_field = to_lower(field);
-            return lower_field.find(clean_query) != std::string::npos;
-        };
-#endif
 
         if (field_filter == "title") {
             matched = field_matches(track.title);

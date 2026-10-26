@@ -44,7 +44,9 @@ int main(int argc, char* argv[]) {
         return httplib::Server::HandlerResponse::Unhandled;
     });
 
-    // --- Health ---
+    // -------------------------------------------------------------------------
+    // 1. Health & Application State
+    // -------------------------------------------------------------------------
     svr.Get("/api/health", [](const httplib::Request&, httplib::Response& res) {
         json body = {
             {"status", "ok"},
@@ -54,7 +56,6 @@ int main(int argc, char* argv[]) {
         res.set_content(body.dump(), "application/json");
     });
 
-    // --- Aggregated App State ---
     svr.Get("/api/state", [&](const httplib::Request&, httplib::Response& res) {
         json body = {
             {"player", player.get_state()},
@@ -67,7 +68,9 @@ int main(int argc, char* argv[]) {
         res.set_content(body.dump(), "application/json");
     });
 
-    // --- Tracks ---
+    // -------------------------------------------------------------------------
+    // 2. Track Catalog Endpoints
+    // -------------------------------------------------------------------------
     svr.Get("/api/tracks", [&](const httplib::Request& req, httplib::Response& res) {
         if (req.has_param("genre")) {
             std::string genre = req.get_param_value("genre");
@@ -111,7 +114,9 @@ int main(int argc, char* argv[]) {
         res.set_content(json{{"track_id", id}, {"liked", liked}}.dump(), "application/json");
     });
 
-    // --- Search ---
+    // -------------------------------------------------------------------------
+    // 3. Search Endpoints
+    // -------------------------------------------------------------------------
     svr.Get("/api/search", [&](const httplib::Request& req, httplib::Response& res) {
         std::string q = req.has_param("q") ? req.get_param_value("q") : "";
         std::string field = req.has_param("field") ? req.get_param_value("field") : "all";
@@ -119,7 +124,9 @@ int main(int argc, char* argv[]) {
         res.set_content(results.dump(), "application/json");
     });
 
-    // --- Playlists ---
+    // -------------------------------------------------------------------------
+    // 4. Playlist Management Endpoints
+    // -------------------------------------------------------------------------
     svr.Get("/api/playlists", [&](const httplib::Request&, httplib::Response& res) {
         json body = playlists.get_all_playlists();
         res.set_content(body.dump(), "application/json");
@@ -231,7 +238,9 @@ int main(int argc, char* argv[]) {
         }
     });
 
-    // --- Queue ---
+    // -------------------------------------------------------------------------
+    // 5. Playback Queue Endpoints
+    // -------------------------------------------------------------------------
     svr.Get("/api/queue", [&](const httplib::Request&, httplib::Response& res) {
         json body = {
             {"tracks", queue.get_queued_tracks()},
@@ -289,7 +298,9 @@ int main(int argc, char* argv[]) {
         res.set_content(json{{"success", true}}.dump(), "application/json");
     });
 
-    // --- Player ---
+    // -------------------------------------------------------------------------
+    // 6. Playback Controller Endpoints
+    // -------------------------------------------------------------------------
     svr.Get("/api/player", [&](const httplib::Request&, httplib::Response& res) {
         json body = player.get_state();
         res.set_content(body.dump(), "application/json");
@@ -363,7 +374,9 @@ int main(int argc, char* argv[]) {
         res.set_content(json(player.get_state()).dump(), "application/json");
     });
 
-    // --- History & Liked ---
+    // -------------------------------------------------------------------------
+    // 7. Listening History & Liked Tracks Endpoints
+    // -------------------------------------------------------------------------
     svr.Get("/api/history", [&](const httplib::Request&, httplib::Response& res) {
         json body = player.get_history();
         res.set_content(body.dump(), "application/json");
@@ -374,7 +387,9 @@ int main(int argc, char* argv[]) {
         res.set_content(body.dump(), "application/json");
     });
 
-    // --- Reset ---
+    // -------------------------------------------------------------------------
+    // 8. Application State Reset Endpoint
+    // -------------------------------------------------------------------------
     svr.Post("/api/reset", [&](const httplib::Request&, httplib::Response& res) {
         library.reset();
         playlists.reset();
@@ -383,7 +398,9 @@ int main(int argc, char* argv[]) {
         res.set_content(json{{"status", "reset_successful"}}.dump(), "application/json");
     });
 
-    // Determine listening port
+    // -------------------------------------------------------------------------
+    // 9. Server Bootstrap & Port Binding
+    // -------------------------------------------------------------------------
     int port = 8080;
     const char* env_port = std::getenv("PORT");
     if (env_port) {

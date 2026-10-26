@@ -19,7 +19,6 @@ std::string PlaybackQueue::dequeue() {
     if (queue_.empty()) {
         return "";
     }
-#ifdef SEED_BUGS
     queue_.pop_front();
     if (queue_.empty()) {
         return "";
@@ -27,11 +26,6 @@ std::string PlaybackQueue::dequeue() {
     std::string track_id = queue_.front();
     queue_.pop_front();
     return track_id;
-#else
-    std::string track_id = queue_.front();
-    queue_.pop_front();
-    return track_id;
-#endif
 }
 
 std::optional<std::string> PlaybackQueue::peek() const {

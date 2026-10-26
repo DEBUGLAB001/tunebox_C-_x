@@ -70,15 +70,9 @@ bool PlaylistTrackList::reorder(size_t from_idx, size_t to_idx) {
     }
 
     auto curr = head_;
-#ifdef SEED_BUGS
     for (size_t i = 0; i <= to_idx - 1 && curr && curr->next; ++i) {
         curr = curr->next;
     }
-#else
-    for (size_t i = 0; i < to_idx - 1 && curr && curr->next; ++i) {
-        curr = curr->next;
-    }
-#endif
 
     if (!curr) {
         // Fallback safety: append if traversal reached end

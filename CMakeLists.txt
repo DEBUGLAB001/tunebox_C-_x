@@ -5,15 +5,13 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_compile_definitions(SEED_BUGS)
-
 # Optimization for fast compile times in containers
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 
 # Core include directories
 include_directories(include)
 
-# 1. Core library with candidate-editable services
+# 1. Core library services
 file(GLOB_RECURSE CORE_SOURCES "src/service/*.cpp")
 add_library(core_services STATIC ${CORE_SOURCES})
 
