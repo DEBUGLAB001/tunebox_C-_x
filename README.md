@@ -17,24 +17,24 @@ TuneBox is a desktop-inspired music player and playlist manager that lets users 
 
 TuneBox contains four user-facing issues that disrupt catalog browsing, search accuracy, playlist organization, and queue playback. These defects cause missing songs, broken search results, incorrect playlist ordering, and skipped queue tracks.
 
-### Reported Issues & Tasks:
+### Reported Bugs to Fix:
 
-Issue 1: Missing Boundary Track in Music Library
+BUG 1: Missing Boundary Track in Music Library
 
 - User Symptom: The last song in the catalog does not appear when browsing all tracks in the library.
 - Task: Ensure that every track in the music catalog appears in the library without the final track being skipped.
 
-Issue 2: Search Fails with Padded Spaces or Uppercase Words
+BUG 2: Search Fails with Padded Spaces or Uppercase Words
 
 - User Symptom: Searching with extra spaces or uppercase letters returns zero results even when matching songs exist in the library.
 - Task: Allow search queries to match songs regardless of letter casing or extra whitespace around search terms.
 
-Issue 3: Playlist Tracks Move to Wrong Positions During Reordering
+BUG 3: Playlist Tracks Move to Wrong Positions During Reordering
 
 - User Symptom: Moving a track up or down inside a playlist places it into the wrong position rather than the selected target slot.
 - Task: Correct playlist track reordering so that moved songs land in their exact intended position while preserving overall order.
 
-Issue 4: Queue Skips the First Queued Song on Playback
+BUG 4: Queue Skips the First Queued Song on Playback
 
 - User Symptom: When advancing to the next song from the queue, the player skips the first queued song and plays the one after it.
 - Task: Ensure queued songs play strictly in first-in, first-out order so that every queued song is played in sequence.
